@@ -150,9 +150,10 @@ CREATE TABLE Articles(
  INSERT INTO Author VALUES (2, 'Mattew', 'pikachu', 'Matt', 'NumberTwo', '666 wastreet', 'dandy.candy@fakeemail.com', 30, 0, 0.25);
  INSERT INTO Author VALUES (3, '420potxJointMan', 'Lul', 'Jose', 'Noway', '123 toomany addreses street', 'DoyouVape@YeahMan.com',42, 0, 420);
  
-
-
  INSERT INTO Cart VALUES (1, 1);
+ INSERT INTO Cart VALUES (2, 2);
+ INSERT INTO Cart VALUES (3, 3);
+
  
  INSERT INTO Shipment VALUES (1, '2018-11-26',1.00, 1.00, 1.00, 1.00, 90210, 1, 1, 1);
  
