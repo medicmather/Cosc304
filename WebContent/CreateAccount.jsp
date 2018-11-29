@@ -151,12 +151,12 @@ out.print("<a href =\"Logout.jsp\">Logout</a>");
 
 HttpSession sess = request.getSession(true);
 try{
-String UserName = request.getParameter("UserName").toString();
-String Password = request.getParameter("password").toString();
-String FirstName = request.getParameter("First Name").toString();
-String LastName = request.getParameter("Last Name").toString();
-String address = request.getParameter("Address").toString();
-String Email = request.getParameter("Email").toString();
+String UserName = request.getParameter("UserName");
+String Password = request.getParameter("password");
+String FirstName = request.getParameter("First Name");
+String LastName = request.getParameter("Last Name");
+String address = request.getParameter("Address");
+String Email = request.getParameter("Email");
 int age = Integer.parseInt(request.getParameter("Age").toString());
 String yesno = request.getParameter("yesno").toString();
 
@@ -173,11 +173,15 @@ int Usernum = rst2.getInt(1);
 Usernum++;
 if(rst.next()==false){
 //	Insert INTO ACCOUNT
-	String SQLInsert="INSERT INTO Account (UserID, UserName, Password, FirstName, LastName, Address, email, Age, isAdmin) VALUES (Usernum, UserName, Password, FirstName, LastName, Address, Email, age, 0)";
+	String SQLInsert="INSERT INTO Account (UserID, UserName, Password, FirstName, LastName, Address, email, Age, isAdmin) VALUES ("+Usernum+", '"+UserName+"', '"+Password+"', '"+FirstName+"', '"+LastName+"', '"+address+"', '"+Email+"', "+age+", 0)";
 	pstmt=con.prepareStatement(SQLInsert);
+
+	pstmt.executeUpdate();//MAKING CART INTO DATABASE
+	String SQLInsertCart = "INSERT INTO Cart VALUES ("+Integer.toString(Usernum)+", "+Integer.toString(Usernum)+")";
+	pstmt=con.prepareStatement(SQLInsertCart);
 	pstmt.executeUpdate();
 	if(yesno.equals("yes")) {
-		String SQLInsert2 = "INSERT INTO Author VALUES(Usernum, UserName, Password, FirstName, LastName, Address, Email, age, 0, 0)";
+		String SQLInsert2 = "INSERT INTO Author VALUES("+Usernum+", 0)";
 	
 	}
 out.println("Account Created!");
@@ -190,9 +194,9 @@ else {
 catch(java.lang.NullPointerException e){
 //	out.println("Incorrect infomation, check your data, NULL" + e.fillInStackTrace());
 }
-catch(Exception e){
+//catch(Exception e){
 	out.println("Error Creating account, check DATA");
-}
+
 
 //checking if the username is taken, thus valid (who cares about password, email, address, optional values really.)
 
