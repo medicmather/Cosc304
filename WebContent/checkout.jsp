@@ -71,6 +71,7 @@ catch (java.lang.ClassNotFoundException e)
 	//creating each row of the table, and creating sum of prices.
 	double totalPrice = 0;
 	cartSet.beforeFirst();
+	NumberFormat currFormat = NumberFormat.getCurrencyInstance();
 	while(cartSet.next()){
 		
 		int aId = cartSet.getInt("ArticleID");
@@ -78,7 +79,6 @@ catch (java.lang.ClassNotFoundException e)
 		String tFName = cartSet.getString("FirstName");
 		String tLName = cartSet.getString("LastName");
 		double aPrice = (double) cartSet.getDouble("Price");
-		NumberFormat currFormat = NumberFormat.getCurrencyInstance();
 		String pPrice = currFormat.format(aPrice);
 		totalPrice += aPrice;
 		
