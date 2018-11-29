@@ -63,7 +63,7 @@ catch (java.lang.ClassNotFoundException e)
 	//getting current user ID
 	int currentUser = Integer.parseInt(session.getAttribute("UserId").toString());
 	//getting article data of articles in users cart
-	String command = "SELECT ArtOrder.ArticleID, Articles.ArticleTitle, FirstName, LastName, Articles.Price FROM ((ArtOrder JOIN Articles ON ArtOrder.ArticleID=Articles.ArticleID) JOIN Candidate ON Articles.CID=Candidate.CID)";
+	String command = "SELECT ArtOrder.ArticleID, Articles.ArticleTitle, FirstName, LastName, Articles.Price FROM ((ArtOrder JOIN Articles ON ArtOrder.ArticleID=Articles.ArticleID) JOIN Candidate ON Articles.CID=Candidate.CID) WHEN CartID="+ currentUser;
 	ResultSet cartSet = statement.executeQuery(command);
 	//creating checkout table
 	out.println("<table>");
