@@ -150,7 +150,7 @@ out.print("<a href =\"Logout.jsp\">Logout</a>");
 <% 
 
 HttpSession sess = request.getSession(true);
-//try{
+try{
 String UserName = request.getParameter("UserName").toString();
 String Password = request.getParameter("password").toString();
 String FirstName = request.getParameter("First Name").toString();
@@ -185,14 +185,14 @@ out.println("Account Created!");
 else {
 	out.println("Username is Taken, Choose Another");
 	}
-//}
-/*
+}
+
 catch(java.lang.NullPointerException e){
-	out.println("Incorrect infomation, check your data, NULL" + e.fillInStackTrace());
+//	out.println("Incorrect infomation, check your data, NULL" + e.fillInStackTrace());
 }
 catch(Exception e){
 	out.println("Error Creating account, check DATA");
-}*/
+}
 
 //checking if the username is taken, thus valid (who cares about password, email, address, optional values really.)
 
