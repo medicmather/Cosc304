@@ -16,7 +16,16 @@ body {
 header {
 	border-bottom: 2px solid black;
 	padding: 2em;
-	background-color: 
+	background-color: #7B241C;
+}
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
 }
 </style>
         <title>SocialBomb Checkout</title>
@@ -54,7 +63,7 @@ catch (java.lang.ClassNotFoundException e)
 	//getting current user ID
 	int currentUser = Integer.parseInt(session.getAttribute("UserId").toString());
 	//getting article data of articles in users cart
-	String command = "SELECT ArtOrder.ArticleID, Articles.ArticleTitle, FirstName, LastName, Articles.Price FROM ((ArtOrder JOIN Articles ON ArtOrder.ArticleID=Articles.ArticleID) JOIN Candidate ON ArtOrder.CartID=Candidate.CID)";
+	String command = "SELECT ArtOrder.ArticleID, Articles.ArticleTitle, FirstName, LastName, Articles.Price FROM ((ArtOrder JOIN Articles ON ArtOrder.ArticleID=Articles.ArticleID) JOIN Candidate ON Articles.CID=Candidate.CID)";
 	ResultSet cartSet = statement.executeQuery(command);
 	//creating checkout table
 	out.println("<table>");
@@ -77,8 +86,11 @@ catch (java.lang.ClassNotFoundException e)
 		out.println("<tr><td>"+aId+"</td><td>"+aTitle+"</td><td>"+tFName+" "+tLName+"</td><td>"+pPrice+"</td></tr>");
 		
 	}
-	
+	String fPrice = currFormat.format(totalPrice);
+	out.println("<tr><th colspan='2'>Total: </th><th colspan='2'>"+fPrice+"</th></tr>");
 	out.println("</table>");
+	
+	
 	%>
 	</form>
 </div>
