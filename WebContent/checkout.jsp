@@ -66,7 +66,7 @@ if(request.getParameter("password") != null){
 		
 	}
 }
-
+cartSet.close();
 %>
 
 <header>
@@ -83,7 +83,7 @@ if(request.getParameter("password") != null){
 	out.println("<tr><th>Article #</th><th>Title</th><th>Target</th><th>Price</th></tr>");
 	//creating each row of the table, and creating sum of prices.
 	double totalPrice = 0;
-	cartSet = statement.executeQuery(command);
+	ResultSet cartSet = statement.executeQuery(command);
 	cartSet.beforeFirst();
 	NumberFormat currFormat = NumberFormat.getCurrencyInstance();
 	out.println(currentUser);
