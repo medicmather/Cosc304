@@ -39,7 +39,7 @@ Connection con = DriverManager.getConnection(url, uid, pw);
 String fileName = "data/order_sql.ddl";
 Statement statement = con.createStatement(
 		ResultSet.TYPE_SCROLL_INSENSITIVE,
-        ResultSet.CONCUR_UPDATABLE);
+        ResultSet.CONCUR_READ_ONLY);
 try
 {	// Load driver class
 	Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
