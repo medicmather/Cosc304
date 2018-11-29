@@ -53,12 +53,12 @@ catch (java.lang.ClassNotFoundException e)
 int currentUser = Integer.parseInt(session.getAttribute("UserId").toString());
 //getting article data of articles in users cart
 String command = "SELECT ArtOrder.ArticleID, Articles.ArticleTitle, FirstName, LastName, Articles.Price FROM ((ArtOrder JOIN Articles ON ArtOrder.ArticleID=Articles.ArticleID) JOIN Candidate ON Articles.CID=Candidate.CID)";
-ResultSet cartSet = statement.executeQuery(command);
-cartSet.beforeFirst();
+ResultSet purchasedSet = statement.executeQuery(command);
+purchasedSet.beforeFirst();
 if(request.getParameter("password") != null){
-	while(cartSet.next()){
+	while(purchasedSet.next()){
 		
-		int aId = cartSet.getInt("ArticleID");
+		int aId = purchasedSet.getInt("ArticleID");
 		String sale = "UPDATE Articles SET OwnerID="+ currentUser +" WHERE ArticleID="+aId;
 		statement.executeUpdate(sale);
 		String updateCart = "DELETE FROM Articles WHERE UserID="+ currentUser +" AND ArticleID="+aId;
@@ -66,7 +66,7 @@ if(request.getParameter("password") != null){
 		
 	}
 }
-cartSet.close();
+purchasedSet.close();
 %>
 
 <header>
