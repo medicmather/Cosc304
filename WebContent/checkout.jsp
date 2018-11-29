@@ -60,9 +60,9 @@ if(request.getParameter("password") != null){
 		
 		int aId = cartSet.getInt("ArticleID");
 		String sale = "UPDATE Articles SET OwnerID="+ currentUser +" WHERE ArticleID="+aId;
-		statement.executeUpdate()(sale);
+		statement.executeUpdate(sale);
 		String updateCart = "DELETE FROM Articles WHERE UserID="+ currentUser +" AND ArticleID="+aId;
-		statement.executeUpdate()(updateCart);
+		statement.executeUpdate(updateCart);
 		
 	}
 }
