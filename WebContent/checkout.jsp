@@ -74,7 +74,7 @@ if(request.getParameter("password") != null){
 </header>
 
 <div id="checkoutTable">
-	<form action="/checkout.jsp" method="post">
+	<form action="/FakeNews/checkout.jsp" method="post">
 	<%
 	
 	//creating checkout table
