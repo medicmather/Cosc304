@@ -49,6 +49,23 @@ catch (java.lang.ClassNotFoundException e)
 	out.println("ClassNotFoundException: " +e);
 }
 //Integer userid = Integer.parseInt(session.getAttribute("UserId"));
+//getting current user ID
+int currentUser = Integer.parseInt(session.getAttribute("UserId").toString());
+//getting article data of articles in users cart
+String command = "SELECT ArtOrder.ArticleID, Articles.ArticleTitle, FirstName, LastName, Articles.Price FROM ((ArtOrder JOIN Articles ON ArtOrder.ArticleID=Articles.ArticleID) JOIN Candidate ON Articles.CID=Candidate.CID)";
+	ResultSet cartSet = statement.executeQuery(command);
+	cartSet.beforeFirst();
+if(request.getPerameter("password") != null){
+while(cartSet.next()){
+		
+		int aId = cartSet.getInt("ArticleID");
+		String sale = "UPDATE Articles SET OwnerID="+currentUser+" WHERE ArticleID="+aID;
+		statement.executeQuery(sale);
+		String updateCart = "DELETE FROM Articles WHERE UserID="+currentUser+" AND ArticleID="+aID;
+		
+	}
+}
+
 %>
 
 <header>
@@ -57,13 +74,9 @@ catch (java.lang.ClassNotFoundException e)
 </header>
 
 <div id="checkoutTable">
-	<form>
+	<form action="/checkout.jsp" method="post">
 	<%
-	//getting current user ID
-	int currentUser = Integer.parseInt(session.getAttribute("UserId").toString());
-	//getting article data of articles in users cart
-	String command = "SELECT ArtOrder.ArticleID, Articles.ArticleTitle, FirstName, LastName, Articles.Price FROM ((ArtOrder JOIN Articles ON ArtOrder.ArticleID=Articles.ArticleID) JOIN Candidate ON Articles.CID=Candidate.CID)";
-	ResultSet cartSet = statement.executeQuery(command);
+	
 	//creating checkout table
 	out.println("<table>");
 	out.println("<tr><th>Article #</th><th>Title</th><th>Target</th><th>Price</th></tr>");
@@ -89,7 +102,10 @@ catch (java.lang.ClassNotFoundException e)
 	String fPrice = currFormat.format(totalPrice);
 	out.println("<tr><th colspan='3'>Total: </th><th colspan='1'>"+fPrice+"</th></tr>");
 	out.println("</table>");
-	
+	out.println("<br>Enter password to confirm Password and Wallet Number: <br>");
+	out.println("<input type='password' name='password' required>");
+	out.println("<input type='number' name='bitcoinWallet' required>");
+	out.println("<input type='submit' value='Submit'>");
 	
 	%>
 	</form>
