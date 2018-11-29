@@ -23,7 +23,6 @@ td, th {
     text-align: left;
     padding: 8px;
 }
-
 tr:nth-child(even) {
     background-color: #dddddd;
 }
@@ -63,7 +62,7 @@ catch (java.lang.ClassNotFoundException e)
 	//getting current user ID
 	int currentUser = Integer.parseInt(session.getAttribute("UserId").toString());
 	//getting article data of articles in users cart
-	String command = "SELECT ArtOrder.ArticleID, Articles.ArticleTitle, FirstName, LastName, Articles.Price FROM ((ArtOrder JOIN Articles ON ArtOrder.ArticleID=Articles.ArticleID) JOIN Candidate ON Articles.CID=Candidate.CID) WHEN CartID="+ currentUser;
+	String command = "SELECT ArtOrder.ArticleID, Articles.ArticleTitle, FirstName, LastName, Articles.Price FROM ((ArtOrder JOIN Articles ON ArtOrder.ArticleID=Articles.ArticleID) JOIN Candidate ON Articles.CID=Candidate.CID)";
 	ResultSet cartSet = statement.executeQuery(command);
 	//creating checkout table
 	out.println("<table>");
@@ -72,6 +71,7 @@ catch (java.lang.ClassNotFoundException e)
 	double totalPrice = 0;
 	cartSet.beforeFirst();
 	NumberFormat currFormat = NumberFormat.getCurrencyInstance();
+	out.println(currentUser);
 	while(cartSet.next()){
 		
 		int aId = cartSet.getInt("ArticleID");
@@ -87,7 +87,7 @@ catch (java.lang.ClassNotFoundException e)
 		
 	}
 	String fPrice = currFormat.format(totalPrice);
-	out.println("<tr><th colspan='2'>Total: </th><th colspan='2'>"+fPrice+"</th></tr>");
+	out.println("<tr><th colspan='3'>Total: </th><th colspan='1'>"+fPrice+"</th></tr>");
 	out.println("</table>");
 	
 	
