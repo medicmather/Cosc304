@@ -109,6 +109,9 @@ cartSet.close();
 	out.println("<input type='number' name='bitcoinWallet' required>");
 	out.println("<input type='submit' value='Submit'>");
 	
+	cartSet.close();
+	statement.close();
+	con.close();
 	%>
 	</form>
 </div>
