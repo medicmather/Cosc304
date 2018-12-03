@@ -122,8 +122,7 @@ out.print("<a href =\"Logout.jsp\">Logout</a>");
   
   <a href="ListAllAuthors.jsp">Authors</a>
   <a href="ListCandidates.jsp">Candidates</a> 
-  <a href="MemorabiliaProducts.jsp">Memorabilia</a>
-   <a href="advancedSearch.jsp">Advanced Search</a>
+   <a href="AdvancedSearch.jsp">Advanced Search</a>
       <form action="/action_page.php">
       <input type="text" placeholder="Search People..." name="search" cols = "50">
       <button type="Search">Search</button>

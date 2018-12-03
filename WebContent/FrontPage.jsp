@@ -86,7 +86,7 @@ String pw = "65511917";
 
 System.out.println("Connecting to database.");
 
-Connection con = DriverManager.getConnection(url, uid, pw); 
+
 
 String fileName = "data/order_sql.ddl";
 
@@ -98,7 +98,7 @@ catch (java.lang.ClassNotFoundException e)
 {
 	out.println("ClassNotFoundException: " +e);
 }
-
+Connection con = DriverManager.getConnection(url, uid, pw); 
 //Integer userid = Integer.parseInt(session.getAttribute("UserId"));
 %>
 <div id="navbar">
@@ -107,14 +107,18 @@ catch (java.lang.ClassNotFoundException e)
 <%   if(session.getAttribute("UserId")==null)out.print("<a href=\"login.jsp\">Login</a><a href =\"CreateAccount.jsp\">Create Account</a>");
 else{
 Integer UserId = Integer.parseInt(session.getAttribute("UserId").toString());
-String SQL = "select FirstName, Lastname from Account where UserId = ?";
+String SQL = "select FirstName, Lastname FROM Account where UserId = ?";
 PreparedStatement pstmt = con.prepareStatement(SQL);
 pstmt.setInt(1,UserId);
 ResultSet rst = pstmt.executeQuery();
 rst.next();
 out.print("<a href=\"FrontPage.jsp\">"+rst.getString(1)+"</a>");
+SQL = "Select UserID FROM Author where UserID ="+Integer.toString(UserId)+"";
+pstmt=con.prepareStatement(SQL);
+rst = pstmt.executeQuery();
+if(rst.next()==true)out.print("<a href=\"WriteArticle.jsp\">Write An Article</a>");
 out.print("<a href=\"PurchasedArticles.jsp\">Purchased Articles</a>");
-out.print("<a href=\"PurchasedArticles\">Shipments</a>");
+out.print("<a href=\"checkout.jsp\">CheckOut</a>");
 out.print("<a href =\"Logout.jsp\">Logout</a>");
 }
 
@@ -122,17 +126,16 @@ out.print("<a href =\"Logout.jsp\">Logout</a>");
   
   <a href="ListAllAuthors.jsp">Authors</a>
   <a href="ListCandidates.jsp">Candidates</a> 
-  <a href="MemorabiliaProducts.jsp">Memorabilia</a>
-   <a href="advancedSearch.jsp">Advanced Search</a>
+   <a href="AdvancedSearch.jsp">Advanced Search</a>
       <form action="FrontPage.jsp">
-      <input type="text" placeholder="Search People..." name="search" cols = "50">
-      <button type="Search">Search</button>
+      <input type="text" placeholder="Search Articles..." name="title" cols = "50">
+      <button type="submit">Search</button>
     </form>
 </div>
 <!--Image hosted on a image hosting website. May not be the best but it worked easier than trying to get it from file -->
 <table>
   <tr>
-    <th>Artitcle Title</th>
+    <th>Article Title</th>
     <th>Target</th>
     <th>Genre</th>
     <th>Date</th>
@@ -144,14 +147,26 @@ out.print("<a href =\"Logout.jsp\">Logout</a>");
 		NumberFormat currFormat = NumberFormat.getCurrencyInstance();
  // int UserID = Integer.parseInt((session.getAttribute("UserId").toString()));
  // String sql = "Select ArticleTitle, Theme, UserID, Articles.CID, OwnerID,Candidate.FirstName, Candidate.LastName,ArticleID,IsSold ReleaseDate From Articles where IsSold=0 ORDERBY ReleaseDate DESC";
-  String sql = "Select TOP 10 ArticleTitle, Theme, UserID, Articles.CID, OwnerID,Candidate.FirstName, Candidate.LastName,ArticleID,IsSold, ReleaseDate, Price From Articles JOIN Candidate ON Articles.CID = Candidate.CID ORDER BY ReleaseDate DESC";
-
-PreparedStatement pstmt = con.prepareStatement(sql);
+  if (request.getParameter("title")==null){
+  String sql = "Select TOP 10 ArticleTitle, Theme, UserID, Articles.CID, OwnerID,Candidate.FirstName, Candidate.LastName,ArticleID,IsSold, ReleaseDate, Price From Articles JOIN Candidate ON Articles.CID = Candidate.CID where IsSold = 0 ORDER BY ReleaseDate DESC";
+  PreparedStatement pstmt = con.prepareStatement(sql);
   ResultSet rst = pstmt.executeQuery();
   while(rst.next()){
 	  int AID = rst.getInt(8);
-	  out.print("</tr><td><a href=\"Article.jsp?ArticleID="+rst.getInt(8)+"\">"+rst.getString(1)+"</a></td><td>"+rst.getString(6)+" "+rst.getString(7)+"</td><td>"+rst.getString(2)+"</td><td>"+rst.getDate(10)+"</td><td>"+currFormat.format(rst.getDouble(11))+"</td><td><a href=addcart.jsp?AID=8"+"</td>Buy Now</tr>");
+	  out.print("</tr><td><a href=\"Article.jsp?ArticleID="+rst.getInt(8)+"\">"+rst.getString(1)+"</a></td><td>"+rst.getString(6)+" "+rst.getString(7)+"</td><td>"+rst.getString(2)+"</td><td>"+rst.getDate(10)+"</td><td>"+currFormat.format(rst.getDouble(11))+"</td><td><a href=addcart.jsp?AID="+rst.getInt(8)+">BuyNow</td></tr>");
   }
+  }
+ else {
+
+	 String sql = "Select ArticleTitle, Theme, UserID, Articles.CID, OwnerID, Candidate.FirstName, Candidate.LastName, ArticleID,IsSold, ReleaseDate, Price From Articles JOIN Candidate ON Articles.CID = Candidate.CID where ArticleTitle  LIKE '%"+request.getParameter("title")+"%' ORDER BY ReleaseDate DESC";
+	 PreparedStatement pstmt = con.prepareStatement(sql);
+	  ResultSet rst = pstmt.executeQuery();
+	  while(rst.next()){
+		  int AID = rst.getInt(8);
+		  out.print("</tr><td><a href=\"Article.jsp?ArticleID="+rst.getInt(8)+"\">"+rst.getString(1)+"</a></td><td>"+rst.getString(6)+" "+rst.getString(7)+"</td><td>"+rst.getString(2)+"</td><td>"+rst.getDate(10)+"</td><td>"+currFormat.format(rst.getDouble(11))+"</td><td><a href=addcart.jsp?AID="+AID+">Buy Now</td></tr>");
+	  }
+ }
+
 	}
   catch(Exception e){
 	  out.println("error Computing purchased articles");

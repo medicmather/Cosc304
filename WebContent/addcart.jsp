@@ -74,13 +74,6 @@ body {
 </div>
 <!--Image hosted on a image hosting website. May not be the best but it worked easier than trying to get it from file -->
 
-<form method="get" action="login.jsp">
-<table align = "center">
-<tr><td>Customer ID:</td><td><input type="text" name="UserName" size="20"></td></tr>
-<tr><td>Password:</td><td><input type="password" name="password" size="20"></td></tr>
-<tr><td><input type="submit" value="Submit"></td><td><input type="reset" value="Reset"></td></tr>
-</table>
-</form>
 <%
 //Note: Forces loading of SQL Server driver
 //Make connection
@@ -104,28 +97,27 @@ catch (java.lang.ClassNotFoundException e)
 }
 
 String AID = request.getParameter("AID");
-if(session.getAttribute("UserID")==null){
-	String redirectURL = "login.jsp";
-	response.sendRedirect(redirectURL);
+if(session.getAttribute("UserId")==null){
+	out.println("<h1 align = \"center\">Please Login to Add to your Cart</h1>");
 }
 else{
-String SQL2="select price from Articles where AID = ?";
+	try{
+String SQL2="select price from Articles where ArticleID = ?";
 PreparedStatement pstmt = con.prepareStatement(SQL2);
+pstmt.setInt(1,Integer.parseInt(AID));
 ResultSet rst = pstmt.executeQuery();
 rst.next();
-String SQL3 = "INSERT INTO ArtOrder Values("+ AID +", "+session.getAttribute("UserID")+", "+Double.toString(rst.getDouble(1))+")";
+String SQL3 = "INSERT INTO ArtOrder Values("+ AID +", "+session.getAttribute("UserId")+", "+Double.toString(rst.getDouble(1))+")";
+pstmt = con.prepareStatement(SQL3);
+pstmt.executeUpdate();
+out.println("<h1>Purchase Added to Cart!</h1>");
+	}
+	catch(Exception e){
+		out.println("<h1>Article Was Already In Your Cart!</h1>");
+	}
 }
-/*
-if(session.getAttribute("Cart")==null){
-	ArrayList<Integer> cart = new ArrayList<>();
-	cart.add(Integer.parseInt(AID));
-}
-else{
-	ArrayList<Integer> cart = (ArrayList<Integer>)session.getAttribute("Cart");
-	cart.add(Integer.parseInt(AID));
-}*/
-String site = new String("FrontPage.jsp");
-response.sendRedirect("site");
+
+
 
 %>
 

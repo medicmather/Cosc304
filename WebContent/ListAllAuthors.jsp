@@ -122,8 +122,7 @@ out.print("<a href =\"Logout.jsp\">Logout</a>");
   
   <a href="ListAllAuthors.jsp">Authors</a>
   <a href="ListCandidates.jsp">Candidates</a> 
-  <a href="MemorabiliaProducts.jsp">Memorabilia</a>
-   <a href="advancedSearch.jsp">Advanced Search</a>
+   <a href="AdvancedSearch.jsp">Advanced Search</a>
       <form action="/action_page.php">
       <input type="text" placeholder="Search People..." name="search" cols = "50">
       <button type="Search">Search</button>
@@ -141,16 +140,18 @@ out.print("<a href =\"Logout.jsp\">Logout</a>");
 // String sql = "Select ArticleTitle, Theme, UserID, Articles.CID, OwnerID,Candidate.FirstName, Candidate.LastName,ArticleID,IsSold ReleaseDate From Articles where IsSold=0 ORDERBY ReleaseDate DESC";
 
 if(request.getParameter("search")==null) {
-	String sql = "Select FirstName, LastName, UserID from Author";
+	String sql = "Select Account.FirstName, Account.LastName, Author.UserID from Author JOIN account ON Author.UserID = Account.UserID where Author.UserID IN (select UserID from Account)";
 	PreparedStatement pstmt = con.prepareStatement(sql);
 	ResultSet rst = pstmt.executeQuery();
 	while(rst.next()){
+		  int AID = rst.getInt(3);
 		  out.print("</tr><tr><td><a href=\"Author.jsp?AuthorID="+rst.getInt(3)+"\">"+rst.getString(1)+" "+rst.getString(2)+"</a></td></tr>");
-	}
+
+}
 }
 
 else {
-	String sql = "Select FirstName, LastName, UserID from Author where Lastname= ?";
+	String sql = "Select Account.FirstName, Account.LastName, Author.UserID from Author JOIN account ON Author.UserID = Account.UserID where Lastname= ? and Author.UserID IN Account.UserID)";
 	PreparedStatement pstmt = con.prepareStatement(sql);
 	pstmt.setString(1,request.getParameter("search"));
 	ResultSet rst = pstmt.executeQuery();

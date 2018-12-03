@@ -71,7 +71,6 @@ String pw = "65511917";
 
 System.out.println("Connecting to database.");
 
-Connection con = DriverManager.getConnection(url, uid, pw); 
 
 String fileName = "data/order_sql.ddl";
 
@@ -83,6 +82,8 @@ catch (java.lang.ClassNotFoundException e)
 {
 	out.println("ClassNotFoundException: " +e);
 }
+
+Connection con = DriverManager.getConnection(url, uid, pw); 
 
 //Integer userid = Integer.parseInt(session.getAttribute("UserId"));
 %>
@@ -107,8 +108,7 @@ out.print("<a href =\"Logout.jsp\">Logout</a>");
   
   <a href="ListAllAuthors.jsp">Authors</a>
   <a href="ListCandidates.jsp">Candidates</a> 
-  <a href="MemorabiliaProducts.jsp">Memorabilia</a>
-   <a href="advancedSearch.jsp">Advanced Search</a>
+   <a href="AdvancedSearch.jsp">Advanced Search</a>
       <form action="/action_page.php">
       <input type="text" placeholder="Search People..." name="search" cols = "50">
       <button type="Search">Search</button>
@@ -194,9 +194,9 @@ else {
 catch(java.lang.NullPointerException e){
 //	out.println("Incorrect infomation, check your data, NULL" + e.fillInStackTrace());
 }
-//catch(Exception e){
+catch(Exception e){
 	out.println("Error Creating account, check DATA");
-
+}
 
 //checking if the username is taken, thus valid (who cares about password, email, address, optional values really.)
 

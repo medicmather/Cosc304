@@ -1,5 +1,7 @@
 <%@ page import="java.sql.*" %>
 <%@ page import="java.text.NumberFormat" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Date" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF8"%>
 <!DOCTYPE html>
 <html>
@@ -170,7 +172,6 @@ String pw = "65511917";
 System.out.println("Connecting to database.");
 
 
-
 String fileName = "data/order_sql.ddl";
 
 try
@@ -181,6 +182,7 @@ catch (java.lang.ClassNotFoundException e)
 {
 	out.println("ClassNotFoundException: " +e);
 }
+
 Connection con = DriverManager.getConnection(url, uid, pw); 
 
 //Integer userid = Integer.parseInt(session.getAttribute("UserId"));
@@ -191,14 +193,18 @@ Connection con = DriverManager.getConnection(url, uid, pw);
 <%   if(session.getAttribute("UserId")==null)out.print("<a href=\"login.jsp\">Login</a><a href =\"CreateAccount.jsp\">Create Account</a>");
 else{
 Integer UserId = Integer.parseInt(session.getAttribute("UserId").toString());
-String SQL = "select FirstName, Lastname from Account where UserId = ?";
+String SQL = "select FirstName, Lastname FROM Account where UserId = ?";
 PreparedStatement pstmt = con.prepareStatement(SQL);
 pstmt.setInt(1,UserId);
 ResultSet rst = pstmt.executeQuery();
 rst.next();
 out.print("<a href=\"FrontPage.jsp\">"+rst.getString(1)+"</a>");
+SQL = "Select UserID FROM Author where UserID ="+Integer.toString(UserId)+"";
+pstmt=con.prepareStatement(SQL);
+rst = pstmt.executeQuery();
+if(rst.next()==true)out.print("<a href=\"WriteArticle.jsp\">Write An Article</a>");
 out.print("<a href=\"PurchasedArticles.jsp\">Purchased Articles</a>");
-out.print("<a href=\"PurchasedArticles\">Shipments</a>");
+out.print("<a href=\"checkout.jsp\">Checkout</a>");
 out.print("<a href =\"Logout.jsp\">Logout</a>");
 }
 
@@ -214,77 +220,82 @@ out.print("<a href =\"Logout.jsp\">Logout</a>");
 </div>
 <!--Image hosted on a image hosting website. May not be the best but it worked easier than trying to get it from file -->
 <form>
-<ul class="form-style-1">
-	<li><label>Search Option</label></li>
-	<li><select name=SearchOption class="field-select">
-	<option value=Author>Author</option>
-	<option value=Candidate>Candidate</option></li>
-	</select>
-    <li><label>Last Name </label> <input type="text" name="LastName" class="field-divided" placeholder="Last Name" /></li>
+<ul class="form-style-1" id ="usrform">
+	<li><label>Article Title</label></li>
+	<li><input type="text" name=ArticleTitle class="field-Long"></li>
+	<li><label>Genre</label></li>
+	<li><input type="text" name=Genre class="field-Long"></li>
+	<li><label>Price</label></li>
+	<li><input type="text" name=Price class="field-Long"></li>
+    <li>
+        <label>Candidate</label>
+        <% 
+        String sql = "Select FirstName, LastName from Candidate";
+        PreparedStatement pstmt = con.prepareStatement(sql);
+        ResultSet rst = pstmt.executeQuery();
+
+       out.println("<select name=\"CandidateName\" class=\"field-select\">");
+   	  // out.println("<option value=optional>optional</option>");
+        while(rst.next()){
+        	out.println("<option value="+rst.getString(1)+">"+rst.getString(1)+" "+rst.getString(2)+"</option>");
+        }
+        
+      //  <select name="field4" class="field-select">
+        %>
         </select>
     </li>
     <li>
-        <input type="submit" value="Search" />
+      <textarea rows="4" cols="50" name="comment" form="usrform">
+Enter Article here...</textarea>
+    </li>
+    <li>
+        <input type="submit" value="Submit" />
     </li>
 </ul>
 </form>
-<table>
-  <tr>
-  
-  
-<% 
-//try{ 
-	NumberFormat currFormat = NumberFormat.getCurrencyInstance();
-// int UserID = Integer.parseInt((session.getAttribute("UserId").toString()));
-// String sql = "Select ArticleTitle, Theme, UserID, Articles.CID, OwnerID,Candidate.FirstName, Candidate.LastName,ArticleID,IsSold ReleaseDate From Articles where IsSold=0 ORDERBY ReleaseDate DESC";
-if (request.getParameter("SearchOption")==null){
-}
-
-else {
-if(request.getParameter("SearchOption").equalsIgnoreCase("author")){
-	out.println("<th>Authors</th>");
-	//write out multiple queries such that they join and pull the search options.
-	String sql = "Select Account.FirstName, Account.LastName, Author.UserID from Author JOIN account ON Author.UserID = Account.UserID where Author.UserID IN (select UserID from Account) and Account.LastName LIKE ?";
-	PreparedStatement pstmt = con.prepareStatement(sql);
-	pstmt.setString(1, "%"+request.getParameter("LastName")+"%");
-	
-	ResultSet rst = pstmt.executeQuery();
-	while(rst.next()){
-		out.print("we get results");
-		  out.print("</tr><tr><td><a href=\"Author.jsp?AuthorID="+rst.getInt(3)+"\">"+rst.getString(1)+" "+rst.getString(2)+"</a></td></tr>");
-	}
-}
-if(request.getParameter("SearchOption").equalsIgnoreCase("Candidate")){
-out.println("<th>Candidates</th><th>Position</th><th>Party</th>");
-
-	String sql = "Select FirstName, LastName, CID, Position, PartyName from Candidate WHERE LastName LIKE ?";
-	PreparedStatement pstmt = con.prepareStatement(sql);
-	pstmt.setString(1, "%"+request.getParameter("LastName")+"%");
-	ResultSet rst = pstmt.executeQuery();
-	while(rst.next()){
-		  out.print("</tr><tr><td><a href=\"Candidate.jsp?CID="+Integer.toString(rst.getInt(3))+"\">"+rst.getString(1)+" "+rst.getString(2)+"</a></td><td>"+rst.getString(4)+"</td><td>"+rst.getString(5)+"</td></tr>");
-	}
-}
-
-	
-}
-/*
-sql = "Select ArticleTitle, Theme, UserID, Articles.CID, OwnerID, Candidate.FirstName, Candidate.LastName, ArticleID,IsSold, ReleaseDate, Price From Articles JOIN Candidate ON Articles.CID = Candidate.CID where ArticleTitle  LIKE '%"+request.getParameter("title")+"%' ORDER BY ReleaseDate DESC";
-pstmt = con.prepareStatement(sql);
+<%
+String sql3 = "SELECT ArticleID FROM Articles ORDER BY ArticleID DESC";
+pstmt = con.prepareStatement(sql3);
 rst = pstmt.executeQuery();
-  while(rst.next()){
-	  int AID = rst.getInt(8);
-	  out.print("</tr><td><a href=\"Article.jsp?ArticleID="+rst.getInt(8)+"\">"+rst.getString(1)+"</a></td><td>"+rst.getString(6)+" "+rst.getString(7)+"</td><td>"+rst.getString(2)+"</td><td>"+rst.getDate(10)+"</td><td>"+currFormat.format(rst.getDouble(11))+"</td><td><a href=addcart.jsp?AID="+AID+">Buy Now</td></tr>");
-  }*/
-
-
+rst.next();
+int AID= rst.getInt(1)+1;
+//try{
+	if(request.getParameter("ArticleTitle")!=null){
+	String ArticleTitle = request.getParameter("ArticleTitle");
+	String Genre = request.getParameter("Genre");
+	Double Price = Double.parseDouble(request.getParameter("Price"));
+	String CandidateFirstName = request.getParameter("CandidateName");
+	String tempsql = "select CID from Candidate where FirstName = ?";
+	pstmt = con.prepareStatement(tempsql);
+	pstmt.setString(1,request.getParameter("CandidateName"));
+	rst = pstmt.executeQuery();
+	rst.next();
+	int CID = rst.getInt(1);
+	String Article = request.getParameter("comment");
+	SimpleDateFormat simpleDateFormat= new SimpleDateFormat("yyyy-MM-dd");
+	String Date = simpleDateFormat.format(new Date());
+	sql = "INSERT INTO Articles VALUES ("+Integer.toString(AID)+", "+Integer.toString(CID)+", 0,? , ?, ?, ?, "+Price+", 0, 0, "+session.getAttribute("UserId")+",  null)";
+	pstmt = con.prepareStatement(sql);
+	pstmt.setString(1,ArticleTitle);
+	pstmt.setString(2,Article);
+	pstmt.setString(3, Genre);
+	  java.util.Date utilDate = new java.util.Date();
+	java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+	pstmt.setDate(4, sqlDate);
+	pstmt.executeUpdate();
+	}
 //}
 //catch(Exception e){
- // out.println("error Computing purchased articles");
+	
+	SimpleDateFormat simpleDateFormat= new SimpleDateFormat("yyyy-MM-dd");
+	String Date = simpleDateFormat.format(new Date());
+	out.println("Check Inputs for Title, Genre, Price and Article");
+			out.println(Date);
 //}
+
 %>
-  </tr>
-</table>
+  
+
 <script>
 window.onscroll = function() {myFunction()};
 
