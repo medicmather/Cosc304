@@ -56,14 +56,6 @@ CREATE TABLE Shipment(
 
 CREATE TABLE Author(
 	UserID INT,
-	UserName VarChar(20) NOT NULL,
-	Password VarChar(20) NOT NULL,
-	FirstName VarChar(20) NOT NULL,
-	LastName VARCHAR(20) NOT NULL,
-	Address VARCHAR(50),
-	email VARCHAR(50) NOT NULL,
-	Age int NOT NULL,
-	isAdmin BIT,
 	Earnings DECIMAL(9,2),
 	PRIMARY KEY (UserID),
 	CONSTRAINT FK_Author_USERID FOREIGN KEY(USERID) References Account(UserID)
@@ -146,14 +138,17 @@ CREATE TABLE Articles(
  INSERT INTO Account VALUES (2, 'Mattew', 'pikachu', 'Matt', 'NumberTwo', '666 wastreet', 'dandy.candy@fakeemail.com', 30, 0);
  INSERT INTO Account VALUES (3, '420potxJointMan', 'Lul', 'Jose', 'Noway', '123 toomany addreses street', 'ugh@ugh.com', 100, 0);
  
- INSERT INTO Author VALUES (1, 'DandyMatt', 'DandyCandy', 'Matthew', 'Locklee', '777 Hahaha Street', 'dandy.matt@live.com', 24, 1,1);
- INSERT INTO Author VALUES (2, 'Mattew', 'pikachu', 'Matt', 'NumberTwo', '666 wastreet', 'dandy.candy@fakeemail.com', 30, 0, 0.25);
- INSERT INTO Author VALUES (3, '420potxJointMan', 'Lul', 'Jose', 'Noway', '123 toomany addreses street', 'DoyouVape@YeahMan.com',42, 0, 420);
+ INSERT INTO Author VALUES (1,1);
+ INSERT INTO Author VALUES (2, 0.25);
+ INSERT INTO Author VALUES (3, 420);
  
  INSERT INTO Cart VALUES (1, 1);
  INSERT INTO Cart VALUES (2, 2);
  INSERT INTO Cart VALUES (3, 3);
+ 
  INSERT INTO ArtOrder VALUES(1,1,5);
+ INSERT INTO ArtOrder VALUES(2,2,5);
+ INSERT INTO ArtOrder VALUES(3,3,5);
 
  
  INSERT INTO Shipment VALUES (1, '2018-11-26',1.00, 1.00, 1.00, 1.00, 90210, 1, 1, 1);
@@ -166,7 +161,7 @@ INSERT INTO PoliticalParty VALUES ('Liberal Party');
 INSERT INTO PoliticalParty VALUES ('Matthew''s dope Party');
 
 DECLARE @CID int
-INSERT INTO Candidate VALUES (1, '256 Hastings Ave', 'Mayor', 'Matthew', 'Lockhart', 'Matthew''s dope Party');
+INSERT INTO Candidate VALUES (1, '256 Hastings Ave', 'Mayor', 'Matthew', 'Lockhart', 'Green Party');
 INSERT INTO Candidate VALUES (2, '123 John Snow Road', 'MLA', 'Russell', 'Morgan', 'Rhinoceros Party');
 INSERT INTO Candidate VALUES (3, '555 Yellow Brick Rd', 'Councilor', 'Carla', 'Mathers', 'Liberal Party');
 
