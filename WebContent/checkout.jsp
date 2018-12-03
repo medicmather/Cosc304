@@ -142,20 +142,34 @@ Statement statement = con.createStatement(
 //getting current user ID
 int currentUser = Integer.parseInt(session.getAttribute("UserId").toString());
 //getting article data of articles in users cart
-String command = "SELECT ArtOrder.ArticleID, Articles.ArticleTitle, FirstName, LastName, Articles.Price FROM ((ArtOrder JOIN Articles ON ArtOrder.ArticleID=Articles.ArticleID) JOIN Candidate ON Articles.CID=Candidate.CID)";
+String command = "SELECT ArtOrder.ArticleID, Articles.ArticleTitle, FirstName, LastName, Articles.Price FROM (((ArtOrder JOIN Articles ON ArtOrder.ArticleID=Articles.ArticleID) JOIN Candidate ON Articles.CID=Candidate.CID) JOIN Cart ON ArtOrder.CartID = Cart.CartID) where Cart.CartID = ?";
 PreparedStatement pstmt = con.prepareStatement(command);
+pstmt.setInt(1,currentUser);
 ResultSet purchasedSet = pstmt.executeQuery();
-if(request.getParameter("password") != null){
+try{
+	String sql = "Select Password from Account where UserID = ?";
+	pstmt = con.prepareStatement(sql);
+	pstmt.setString(1,session.getAttribute("UserId").toString());
+	ResultSet rst = pstmt.executeQuery();
+	rst.next();
+	String password = rst.getString(1);
+if(request.getParameter("password").equals(password)){
 	while(purchasedSet.next()){
 		
 		int aId = purchasedSet.getInt("ArticleID");
-		String sale = "UPDATE Articles SET OwnerID="+ currentUser +" WHERE ArticleID="+aId;
+		String sale = "UPDATE Articles SET OwnerID="+ currentUser +", IsSold = 1 WHERE ArticleID="+aId;
 		con.prepareStatement(sale).executeUpdate();
-		String updateCart = "DELETE FROM Articles WHERE UserID="+ currentUser +" AND ArticleID="+aId;
+		String updateCart = "DELETE FROM ArtOrder WHERE CartID="+ currentUser +" AND ArticleID="+aId;
 		con.prepareStatement(updateCart).executeUpdate();
-		//statement.executeUpdate(updateCart);
 		
 	}
+}
+else{
+	out.println("<h1>Incorrect password</h1>");
+}
+}
+catch (Exception e){
+	
 }
 purchasedSet.close();
 %>
@@ -174,8 +188,9 @@ purchasedSet.close();
 	out.println("<tr><th>Article #</th><th>Title</th><th>Target</th><th>Price</th></tr>");
 	//creating each row of the table, and creating sum of prices.
 	double totalPrice = 0;
-	ResultSet cartSet = statement.executeQuery(command);
-	cartSet.beforeFirst();
+	pstmt = con.prepareStatement(command);
+	pstmt.setInt(1,currentUser);
+	ResultSet cartSet = pstmt.executeQuery();
 	NumberFormat currFormat = NumberFormat.getCurrencyInstance();
 	while(cartSet.next()){
 		
@@ -193,12 +208,16 @@ purchasedSet.close();
 	}
 	String fPrice = currFormat.format(totalPrice);
 	out.println("<tr><th colspan='3'>Total: </th><th colspan='1'>"+fPrice+"</th></tr>");
-	out.println("</table>");
+	out.println("</table>");%>
+	</form>
+	<table></table>
+	<form method="get" action="checkout.jsp">
+	<% 
 	out.println("<br>Enter password to confirm Password and Wallet Number: <br>");
 	out.println("<input type='password' name='password' required>");
 	out.println("<input type='number' name='bitcoinWallet' required>");
 	out.println("<input type='submit' value='Submit'>");
-	
+	out.println("</form>");
 	cartSet.close();
 	statement.close();
 	con.close();

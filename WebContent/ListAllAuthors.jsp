@@ -86,7 +86,7 @@ String pw = "65511917";
 
 System.out.println("Connecting to database.");
 
-Connection con = DriverManager.getConnection(url, uid, pw); 
+
 
 String fileName = "data/order_sql.ddl";
 
@@ -98,23 +98,27 @@ catch (java.lang.ClassNotFoundException e)
 {
 	out.println("ClassNotFoundException: " +e);
 }
-
+Connection con = DriverManager.getConnection(url, uid, pw); 
 //Integer userid = Integer.parseInt(session.getAttribute("UserId"));
 %>
 <div id="navbar">
   <a class="active" href="FrontPage.jsp">Home</a>
 
-<%   if(session.getAttribute("UserId")==null||session.getAttribute("UserId") != "")out.print("<a href=\"login.jsp\">Login</a><a href =\"CreateAccount.jsp\">Create Account</a>");
+<%   if(session.getAttribute("UserId")==null)out.print("<a href=\"login.jsp\">Login</a><a href =\"CreateAccount.jsp\">Create Account</a>");
 else{
 Integer UserId = Integer.parseInt(session.getAttribute("UserId").toString());
-String SQL = "select FirstName, Lastname from Account where UserId = ?";
+String SQL = "select FirstName, Lastname FROM Account where UserId = ?";
 PreparedStatement pstmt = con.prepareStatement(SQL);
 pstmt.setInt(1,UserId);
 ResultSet rst = pstmt.executeQuery();
 rst.next();
 out.print("<a href=\"FrontPage.jsp\">"+rst.getString(1)+"</a>");
+SQL = "Select UserID FROM Author where UserID ="+Integer.toString(UserId)+"";
+pstmt=con.prepareStatement(SQL);
+rst = pstmt.executeQuery();
+if(rst.next()==true)out.print("<a href=\"WriteArticle.jsp\">Write An Article</a>");
 out.print("<a href=\"PurchasedArticles.jsp\">Purchased Articles</a>");
-out.print("<a href=\"PurchasedArticles\">Shipments</a>");
+out.print("<a href=\"checkout.jsp\">CheckOut</a>");
 out.print("<a href =\"Logout.jsp\">Logout</a>");
 }
 
@@ -123,9 +127,9 @@ out.print("<a href =\"Logout.jsp\">Logout</a>");
   <a href="ListAllAuthors.jsp">Authors</a>
   <a href="ListCandidates.jsp">Candidates</a> 
    <a href="AdvancedSearch.jsp">Advanced Search</a>
-      <form action="/action_page.php">
-      <input type="text" placeholder="Search People..." name="search" cols = "50">
-      <button type="Search">Search</button>
+      <form action="FrontPage.jsp">
+      <input type="text" placeholder="Search Articles..." name="title" cols = "50">
+      <button type="submit">Search</button>
     </form>
 </div>
 <!--Image hosted on a image hosting website. May not be the best but it worked easier than trying to get it from file -->

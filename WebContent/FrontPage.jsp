@@ -158,7 +158,7 @@ out.print("<a href =\"Logout.jsp\">Logout</a>");
   }
  else {
 
-	 String sql = "Select ArticleTitle, Theme, UserID, Articles.CID, OwnerID, Candidate.FirstName, Candidate.LastName, ArticleID,IsSold, ReleaseDate, Price From Articles JOIN Candidate ON Articles.CID = Candidate.CID where ArticleTitle  LIKE '%"+request.getParameter("title")+"%' ORDER BY ReleaseDate DESC";
+	 String sql = "Select ArticleTitle, Theme, UserID, Articles.CID, OwnerID, Candidate.FirstName, Candidate.LastName, ArticleID,IsSold, ReleaseDate, Price From Articles JOIN Candidate ON Articles.CID = Candidate.CID where ArticleTitle  LIKE '%"+request.getParameter("title")+"%' AND IsSold=0 ORDER BY ReleaseDate DESC";
 	 PreparedStatement pstmt = con.prepareStatement(sql);
 	  ResultSet rst = pstmt.executeQuery();
 	  while(rst.next()){

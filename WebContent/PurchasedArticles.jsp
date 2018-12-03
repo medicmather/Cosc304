@@ -113,8 +113,7 @@ pstmt.setInt(1,UserId);
 ResultSet rst = pstmt.executeQuery();
 rst.next();
 out.print("<a href=\"FrontPage.jsp\">"+rst.getString(1)+"</a>");
-out.print("<a href=\"Shipment.jsp\">Purchased Articles</a>");
-out.print("<a href=\"Shipment.jsp\">Shipments</a>");
+out.print("<a href=\"PurchasedArticles.jsp\">Purchased Articles</a>");
 out.print("<a href =\"Logout.jsp\">Logout</a>");
 }
 
@@ -151,9 +150,6 @@ out.print("<a href =\"Logout.jsp\">Logout</a>");
 	  out.println("error Computing purchased articles");
   }
   %>
-    <td>Alfreds Futterkiste</td>
-    <td>Maria Anders</td>
-    <td>Germany</td>
   </tr>
 
   </tr>
